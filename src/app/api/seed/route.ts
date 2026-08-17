@@ -68,12 +68,24 @@ export async function POST() {
     create: { id: "default" },
   });
 
-  // Seed admin
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@avera.uz";
-  const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+  // Seed admin — env variable'lar shart, fallback yo'q
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!adminEmail || !adminPassword) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          "ADMIN_EMAIL va ADMIN_PASSWORD environment variable sifatida o'rnatilishi shart",
+      },
+      { status: 400 }
+    );
+  }
+
   await prisma.admin.upsert({
     where: { email: adminEmail },
-    update: {},
+    update: { password: hashPassword(adminPassword) },
     create: {
       email: adminEmail,
       password: hashPassword(adminPassword),
