@@ -288,14 +288,13 @@ a { color: #0F172A; text-decoration: none; }
     top: 6px !important;
     border-radius: 12px !important;
     padding: 10px 12px !important;
-    gap: 8px !important;
   }
 }
 
 .header-nav { display: flex; gap: 4px; margin-left: 12px; }
 @media (max-width: 868px) { .header-nav { display: none; } }
 
-/* Search bar: visible on desktop/tablet, hidden on mobile (accessed via dropdown) */
+/* Search bar: desktop only */
 .header-search {
   flex: 1;
   display: flex;
@@ -315,14 +314,8 @@ a { color: #0F172A; text-decoration: none; }
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-@media (max-width: 868px) {
-  .header-search { max-width: 180px; height: 38px; padding: 0 10px; }
-}
-@media (max-width: 640px) {
-  .header-search { display: none !important; }
-}
 
-/* Profile button variants */
+/* Profile button variants — desktop only */
 .header-actions .btn-profile-text { display: flex; }
 .header-actions .btn-profile-icon { display: none; }
 @media (max-width: 868px) {
@@ -330,69 +323,10 @@ a { color: #0F172A; text-decoration: none; }
   .header-actions .btn-profile-icon { display: flex; }
 }
 
-/* Mobile header action buttons — uniform sizing and spacing */
-@media (max-width: 640px) {
-  .header-actions {
-    gap: 6px !important;
-    margin-left: auto;
-  }
-  .header-actions .btn-accent {
-    width: 40px !important;
-    height: 40px !important;
-    padding: 0 !important;
-    justify-content: center !important;
-  }
-  .header-actions .btn-profile-icon {
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 10px !important;
-  }
-  .header-actions .lang-toggle-btn {
-    height: 40px !important;
-    padding: 0 10px !important;
-    border-radius: 10px !important;
-  }
-  .mobile-menu-btn {
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 10px !important;
-  }
-}
-
-/* Extra small phones — tighten even more */
+/* Extra small phones */
 @media (max-width: 380px) {
   .site-header {
     padding: 8px 10px !important;
-    gap: 6px !important;
-  }
-  .header-logo-text {
-    display: none !important;
-  }
-  .header-actions {
-    gap: 4px !important;
-  }
-  .header-actions .btn-accent {
-    width: 36px !important;
-    height: 36px !important;
-  }
-  .header-actions .btn-profile-icon {
-    width: 36px !important;
-    height: 36px !important;
-  }
-  .header-actions .lang-toggle-btn {
-    height: 36px !important;
-    padding: 0 8px !important;
-  }
-  .header-actions .lang-toggle-btn .lang-label {
-    display: none !important;
-  }
-  .header-actions .mobile-search-btn {
-    width: 36px !important;
-    height: 36px !important;
-  }
-  .mobile-menu-btn {
-    width: 36px !important;
-    height: 36px !important;
   }
 }
 
@@ -617,10 +551,9 @@ html, body {
   }
 }
 
-/* Mobile menu dropdown proper display */
-@media (max-width: 868px) {
-  .mobile-menu-btn { display: flex !important; }
-  .mobile-nav-dropdown { display: flex !important; }
+/* Catalog dropdown hover state */
+.catalog-dropdown a:hover {
+  background: #F1F3F5;
 }
 
 /* Ensure text doesn't overflow containers */

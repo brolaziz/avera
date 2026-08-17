@@ -42,7 +42,7 @@ export function AdminLogin() {
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <h1 style={{
             fontSize: 28,
-            fontWeight: 300,
+            fontWeight: 500,
             fontFamily: "var(--font-brand)",
             letterSpacing: "0.04em",
             margin: "0 0 8px",

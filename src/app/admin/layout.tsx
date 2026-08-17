@@ -81,7 +81,7 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
         >
           <div style={{ padding: "28px 24px 20px", borderBottom: "1px solid #1E293B" }}>
             <Link href="/admin" style={{ color: "#E2E8F0", textDecoration: "none" }}>
-              <h1 style={{ fontSize: 22, margin: 0, fontWeight: 300, fontFamily: "var(--font-brand)", letterSpacing: "0.04em" }}>
+              <h1 style={{ fontSize: 22, margin: 0, fontWeight: 500, fontFamily: "var(--font-brand)", letterSpacing: "0.04em" }}>
                 AVERA <span style={{ color: "var(--accent)" }}>Admin</span>
               </h1>
             </Link>
@@ -181,7 +181,7 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
                 <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <span style={{ fontSize: 18, fontWeight: 300, fontFamily: "var(--font-brand)", letterSpacing: "0.04em", marginLeft: 12 }}>
+            <span style={{ fontSize: 18, fontWeight: 500, fontFamily: "var(--font-brand)", letterSpacing: "0.04em", marginLeft: 12 }}>
               AVERA <span style={{ color: "var(--accent)" }}>Admin</span>
             </span>
             <div style={{ marginLeft: "auto" }}>

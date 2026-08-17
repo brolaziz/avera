@@ -23,7 +23,7 @@ export function Footer() {
     >
       <div className="footer-grid">
         <div>
-          <div style={{ fontSize: 22, fontWeight: 300, fontFamily: "var(--font-brand)", letterSpacing: "0.04em", color: "#fff", display: "flex", alignItems: "center", gap: 9, marginBottom: 12 }}>
+          <div style={{ fontSize: 22, fontWeight: 500, fontFamily: "var(--font-brand)", letterSpacing: "0.04em", color: "#fff", display: "flex", alignItems: "center", gap: 9, marginBottom: 12 }}>
             <span style={{ width: 24, height: 24, borderRadius: 8, background: "linear-gradient(135deg, var(--accent), var(--accent-hover))", display: "inline-block", flexShrink: 0 }} />
             AVERA
           </div>
