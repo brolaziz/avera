@@ -1,0 +1,441 @@
+"use client";
+
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
+
+export type Locale = "uz" | "en" | "ru";
+
+const translations: Record<Locale, Record<string, string>> = {
+  uz: {
+    "nav.catalog": "Katalog",
+    "nav.search": "Mahsulot qidirish...",
+    "nav.search_link": "Qidiruv",
+    "nav.profile": "Profil",
+    "nav.cart": "Savat",
+
+    "hero.badge": "Haftaning tanlovi",
+    "hero.title": "Sumkalarga",
+    "hero.discount": "chegirma",
+    "hero.desc": "Toshkent bo'ylab 24 soatda yetkazamiz. Karta yoki naqd — o'zingiz tanlaysiz.",
+    "hero.shop": "Xarid qilish",
+    "hero.catalog": "Katalog",
+    "hero.new": "Yangi kelganlar",
+    "hero.new_desc": "Bu haftada 24 ta yangi model qo'shildi.",
+
+    "perks.delivery": "24 soatda yetkazish",
+    "perks.delivery_sub": "Toshkent shahri bo'ylab bepul",
+    "perks.return": "30 kun qaytarish",
+    "perks.return_sub": "Sababini so'ramaymiz",
+    "perks.original": "Original charm",
+    "perks.original_sub": "Har mahsulotga sertifikat",
+
+    "products.popular": "Mashhur mahsulotlar",
+    "products.all": "Barchasi",
+    "products.add": "Savatga",
+    "products.added": "Qo'shildi",
+    "products.not_found": "Mahsulot topilmadi.",
+    "products.back_catalog": "Katalogga qaytish",
+
+    "catalog.title": "Ayollar sumkalari",
+    "catalog.found": "mahsulot topildi",
+
+    "cart.title": "Savat",
+    "cart.empty": "Savatingiz bo'sh",
+    "cart.go_catalog": "Katalogga o'tish",
+    "cart.items": "mahsulot",
+    "cart.summary": "Buyurtma xulosasi",
+    "cart.products": "Mahsulotlar",
+    "cart.delivery": "Yetkazib berish",
+    "cart.free": "Bepul",
+    "cart.total": "Jami",
+    "cart.checkout": "To'lovga o'tish",
+    "cart.continue": "Xaridni davom ettirish",
+
+    "checkout.delivery": "Yetkazib berish",
+    "checkout.name": "Ism",
+    "checkout.name_ph": "Ismingiz",
+    "checkout.phone": "Telefon",
+    "checkout.phone_ph": "+998 90 000 00 00",
+    "checkout.address": "Manzil",
+    "checkout.address_ph": "Yetkazish manzili",
+    "checkout.payment": "To'lov",
+    "checkout.card_number": "Karta raqami",
+    "checkout.transfer_instruction": "Ushbu kartaga {amount} so'm to'lov qiling va chekni {telegram} telegram akkauntiga yuboring",
+    "checkout.order": "Buyurtma",
+    "checkout.pay": "To'lanadi",
+    "checkout.proceed_payment": "To'lovga o'tish",
+    "checkout.paid_btn": "To'lov qildim",
+    "checkout.paid_hint": "Tugmani faqat to'lovni amalga oshirib, chekni Telegramga yuborganingizdan keyin bosing",
+    "checkout.order_placed": "Buyurtma qabul qilindi!",
+    "checkout.order_placed_desc": "To'lovingiz tekshirilmoqda. Admin tasdiqlangandan so'ng buyurtmangiz yo'lga chiqadi.",
+    "checkout.order_number": "Buyurtma raqami",
+    "checkout.confirm": "Buyurtmani tasdiqlash",
+
+    "confirm.title": "Buyurtma qabul qilindi",
+    "confirm.desc": "raqamli buyurtma qabul qilindi. Kuryer 24 soat ichida aloqaga chiqadi.",
+    "confirm.orders": "Buyurtmalarim",
+    "confirm.close": "Yopish",
+
+    "profile.orders": "Buyurtmalarim",
+    "profile.status.pending": "Tasdiqlanishi kutilmoqda",
+    "profile.status.transit": "Yo'lda",
+    "profile.status.paid": "To'lov qilindi",
+    "profile.status.cancelled": "Bekor qilindi",
+
+    "search.clear": "Tozalash",
+    "search.results": "bo'yicha",
+    "search.result_count": "natija",
+    "search.not_found": "Hech narsa topilmadi",
+    "search.try_other": "Boshqa so'z bilan qidirib ko'ring",
+    "search.hint": "Mahsulot nomini yozing",
+
+    "product.color": "Rang",
+    "product.add_cart": "Savatga qo'shish",
+    "product.added_cart": "Qo'shildi",
+    "product.new": "Yangi",
+    "product.home": "Bosh sahifa",
+
+    "footer.shop": "Do'kon",
+    "footer.bags": "Sumkalar",
+    "footer.backpacks": "Ryukzaklar",
+    "footer.wallets": "Hamyonlar",
+    "footer.discounts": "Chegirmalar",
+    "footer.help": "Yordam",
+    "footer.delivery": "Yetkazib berish",
+    "footer.returns": "Qaytarish",
+    "footer.sizes": "O'lcham jadvali",
+    "footer.faq": "Savol-javob",
+    "footer.company": "Kompaniya",
+    "footer.about": "Biz haqimizda",
+    "footer.stores": "Do'konlar",
+    "footer.partnership": "Hamkorlik",
+    "footer.contact": "Aloqa",
+    "footer.rights": "Barcha huquqlar himoyalangan.",
+    "footer.description": "AVERA — original charm sumkalar. 2019-yildan buyon 40 000+ mijoz.",
+
+    "admin.dashboard": "Boshqaruv paneli",
+    "admin.add_product": "Mahsulot qo'shish",
+    "admin.products_count": "Mahsulotlar soni",
+    "admin.orders": "Buyurtmalar",
+    "admin.revenue": "Daromad",
+    "admin.in_transit": "Yo'ldagi buyurtmalar",
+    "admin.recent_orders": "Oxirgi buyurtmalar",
+    "admin.view_all": "Hammasini ko'rish",
+    "admin.order": "Buyurtma",
+    "admin.customer": "Mijoz",
+    "admin.date": "Sana",
+    "admin.total": "Jami",
+    "admin.status": "Holat",
+    "admin.status.paid": "To'lov qilindi",
+    "admin.status.pending": "Kutilmoqda",
+    "admin.status.cancelled": "Bekor qilindi",
+    "admin.status.transit": "Yo'lda",
+    "admin.pending_orders": "Kutilayotgan to'lovlar",
+    "admin.home": "Bosh sahifa",
+    "admin.products": "Mahsulotlar",
+    "admin.catalog": "Katalog",
+    "admin.settings": "Sozlamalar",
+    "admin.back_site": "Saytga qaytish",
+  },
+  en: {
+    "nav.catalog": "Catalog",
+    "nav.search": "Search products...",
+    "nav.search_link": "Search",
+    "nav.profile": "Profile",
+    "nav.cart": "Cart",
+
+    "hero.badge": "Pick of the week",
+    "hero.title": "Bags",
+    "hero.discount": "off",
+    "hero.desc": "Free delivery within 24 hours in Tashkent. Pay by card or cash — your choice.",
+    "hero.shop": "Shop now",
+    "hero.catalog": "Catalog",
+    "hero.new": "New arrivals",
+    "hero.new_desc": "24 new models added this week.",
+
+    "perks.delivery": "24-hour delivery",
+    "perks.delivery_sub": "Free across Tashkent",
+    "perks.return": "30-day returns",
+    "perks.return_sub": "No questions asked",
+    "perks.original": "Genuine leather",
+    "perks.original_sub": "Certificate for every product",
+
+    "products.popular": "Popular products",
+    "products.all": "View all",
+    "products.add": "Add to cart",
+    "products.added": "Added",
+    "products.not_found": "Product not found.",
+    "products.back_catalog": "Back to catalog",
+
+    "catalog.title": "Women's bags",
+    "catalog.found": "products found",
+
+    "cart.title": "Cart",
+    "cart.empty": "Your cart is empty",
+    "cart.go_catalog": "Go to catalog",
+    "cart.items": "items",
+    "cart.summary": "Order summary",
+    "cart.products": "Products",
+    "cart.delivery": "Delivery",
+    "cart.free": "Free",
+    "cart.total": "Total",
+    "cart.checkout": "Proceed to checkout",
+    "cart.continue": "Continue shopping",
+
+    "checkout.delivery": "Delivery",
+    "checkout.name": "Name",
+    "checkout.name_ph": "Your name",
+    "checkout.phone": "Phone",
+    "checkout.phone_ph": "+998 90 000 00 00",
+    "checkout.address": "Address",
+    "checkout.address_ph": "Delivery address",
+    "checkout.payment": "Payment",
+    "checkout.card_number": "Card number",
+    "checkout.transfer_instruction": "Transfer {amount} UZS to this card and send the receipt to {telegram} on Telegram",
+    "checkout.order": "Order",
+    "checkout.pay": "To pay",
+    "checkout.proceed_payment": "Proceed to payment",
+    "checkout.paid_btn": "I have paid",
+    "checkout.paid_hint": "Press this button only after you have made the payment and sent the receipt via Telegram",
+    "checkout.order_placed": "Order received!",
+    "checkout.order_placed_desc": "Your payment is being verified. Once confirmed by admin, your order will be shipped.",
+    "checkout.order_number": "Order number",
+    "checkout.confirm": "Confirm order",
+
+    "confirm.title": "Order accepted",
+    "confirm.desc": "order has been accepted. A courier will contact you within 24 hours.",
+    "confirm.orders": "My orders",
+    "confirm.close": "Close",
+
+    "profile.orders": "My orders",
+    "profile.status.pending": "Awaiting confirmation",
+    "profile.status.transit": "In transit",
+    "profile.status.paid": "Paid",
+    "profile.status.cancelled": "Cancelled",
+
+    "search.clear": "Clear",
+    "search.results": "for",
+    "search.result_count": "results",
+    "search.not_found": "Nothing found",
+    "search.try_other": "Try a different search term",
+    "search.hint": "Type a product name",
+
+    "product.color": "Color",
+    "product.add_cart": "Add to cart",
+    "product.added_cart": "Added",
+    "product.new": "New",
+    "product.home": "Home",
+
+    "footer.shop": "Shop",
+    "footer.bags": "Bags",
+    "footer.backpacks": "Backpacks",
+    "footer.wallets": "Wallets",
+    "footer.discounts": "Discounts",
+    "footer.help": "Help",
+    "footer.delivery": "Delivery",
+    "footer.returns": "Returns",
+    "footer.sizes": "Size guide",
+    "footer.faq": "FAQ",
+    "footer.company": "Company",
+    "footer.about": "About us",
+    "footer.stores": "Stores",
+    "footer.partnership": "Partnership",
+    "footer.contact": "Contact",
+    "footer.rights": "All rights reserved.",
+    "footer.description": "AVERA — genuine leather bags. 40,000+ customers since 2019.",
+
+    "admin.dashboard": "Dashboard",
+    "admin.add_product": "Add product",
+    "admin.products_count": "Products",
+    "admin.orders": "Orders",
+    "admin.revenue": "Revenue",
+    "admin.in_transit": "In transit",
+    "admin.recent_orders": "Recent orders",
+    "admin.view_all": "View all",
+    "admin.order": "Order",
+    "admin.customer": "Customer",
+    "admin.date": "Date",
+    "admin.total": "Total",
+    "admin.status": "Status",
+    "admin.status.paid": "Paid",
+    "admin.status.pending": "Pending",
+    "admin.status.cancelled": "Cancelled",
+    "admin.status.transit": "In transit",
+    "admin.pending_orders": "Pending payments",
+    "admin.home": "Home",
+    "admin.products": "Products",
+    "admin.catalog": "Catalog",
+    "admin.settings": "Settings",
+    "admin.back_site": "Back to site",
+  },
+  ru: {
+    "nav.catalog": "Каталог",
+    "nav.search": "Поиск товаров...",
+    "nav.search_link": "Поиск",
+    "nav.profile": "Профиль",
+    "nav.cart": "Корзина",
+
+    "hero.badge": "Выбор недели",
+    "hero.title": "Сумки со скидкой",
+    "hero.discount": "скидка",
+    "hero.desc": "Доставка по Ташкенту за 24 часа. Оплата картой или наличными — на ваш выбор.",
+    "hero.shop": "За покупками",
+    "hero.catalog": "Каталог",
+    "hero.new": "Новинки",
+    "hero.new_desc": "На этой неделе добавлено 24 новых модели.",
+
+    "perks.delivery": "Доставка за 24 часа",
+    "perks.delivery_sub": "Бесплатно по Ташкенту",
+    "perks.return": "Возврат 30 дней",
+    "perks.return_sub": "Без вопросов",
+    "perks.original": "Натуральная кожа",
+    "perks.original_sub": "Сертификат на каждый товар",
+
+    "products.popular": "Популярные товары",
+    "products.all": "Все товары",
+    "products.add": "В корзину",
+    "products.added": "Добавлено",
+    "products.not_found": "Товар не найден.",
+    "products.back_catalog": "Вернуться в каталог",
+
+    "catalog.title": "Женские сумки",
+    "catalog.found": "товаров найдено",
+
+    "cart.title": "Корзина",
+    "cart.empty": "Ваша корзина пуста",
+    "cart.go_catalog": "Перейти в каталог",
+    "cart.items": "товаров",
+    "cart.summary": "Итого заказа",
+    "cart.products": "Товары",
+    "cart.delivery": "Доставка",
+    "cart.free": "Бесплатно",
+    "cart.total": "Итого",
+    "cart.checkout": "Перейти к оплате",
+    "cart.continue": "Продолжить покупки",
+
+    "checkout.delivery": "Доставка",
+    "checkout.name": "Имя",
+    "checkout.name_ph": "Ваше имя",
+    "checkout.phone": "Телефон",
+    "checkout.phone_ph": "+998 90 000 00 00",
+    "checkout.address": "Адрес",
+    "checkout.address_ph": "Адрес доставки",
+    "checkout.payment": "Оплата",
+    "checkout.card_number": "Номер карты",
+    "checkout.transfer_instruction": "Переведите {amount} сум на эту карту и отправьте чек в Telegram {telegram}",
+    "checkout.order": "Заказ",
+    "checkout.pay": "К оплате",
+    "checkout.proceed_payment": "Перейти к оплате",
+    "checkout.paid_btn": "Я оплатил(а)",
+    "checkout.paid_hint": "Нажмите кнопку только после оплаты и отправки чека в Telegram",
+    "checkout.order_placed": "Заказ принят!",
+    "checkout.order_placed_desc": "Ваш платёж проверяется. После подтверждения администратором заказ будет отправлен.",
+    "checkout.order_number": "Номер заказа",
+    "checkout.confirm": "Подтвердить заказ",
+
+    "confirm.title": "Заказ принят",
+    "confirm.desc": "заказ принят. Курьер свяжется с вами в течение 24 часов.",
+    "confirm.orders": "Мои заказы",
+    "confirm.close": "Закрыть",
+
+    "profile.orders": "Мои заказы",
+    "profile.status.pending": "Ожидает подтверждения",
+    "profile.status.transit": "В пути",
+    "profile.status.paid": "Оплачен",
+    "profile.status.cancelled": "Отменён",
+
+    "search.clear": "Очистить",
+    "search.results": "по запросу",
+    "search.result_count": "результатов",
+    "search.not_found": "Ничего не найдено",
+    "search.try_other": "Попробуйте другой запрос",
+    "search.hint": "Введите название товара",
+
+    "product.color": "Цвет",
+    "product.add_cart": "В корзину",
+    "product.added_cart": "Добавлено",
+    "product.new": "Новинка",
+    "product.home": "Главная",
+
+    "footer.shop": "Магазин",
+    "footer.bags": "Сумки",
+    "footer.backpacks": "Рюкзаки",
+    "footer.wallets": "Кошельки",
+    "footer.discounts": "Скидки",
+    "footer.help": "Помощь",
+    "footer.delivery": "Доставка",
+    "footer.returns": "Возврат",
+    "footer.sizes": "Таблица размеров",
+    "footer.faq": "Вопрос-ответ",
+    "footer.company": "Компания",
+    "footer.about": "О нас",
+    "footer.stores": "Магазины",
+    "footer.partnership": "Сотрудничество",
+    "footer.contact": "Контакты",
+    "footer.rights": "Все права защищены.",
+    "footer.description": "AVERA — сумки из натуральной кожи. Более 40 000 клиентов с 2019 года.",
+
+    "admin.dashboard": "Панель управления",
+    "admin.add_product": "Добавить товар",
+    "admin.products_count": "Товары",
+    "admin.orders": "Заказы",
+    "admin.revenue": "Доход",
+    "admin.in_transit": "В пути",
+    "admin.recent_orders": "Последние заказы",
+    "admin.view_all": "Смотреть все",
+    "admin.order": "Заказ",
+    "admin.customer": "Клиент",
+    "admin.date": "Дата",
+    "admin.total": "Итого",
+    "admin.status": "Статус",
+    "admin.status.paid": "Оплачен",
+    "admin.status.pending": "Ожидает",
+    "admin.status.cancelled": "Отменён",
+    "admin.status.transit": "В пути",
+    "admin.pending_orders": "Ожидающие оплаты",
+    "admin.home": "Главная",
+    "admin.products": "Товары",
+    "admin.catalog": "Каталог",
+    "admin.settings": "Настройки",
+    "admin.back_site": "На сайт",
+  },
+};
+
+interface I18nContextType {
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
+  t: (key: string) => string;
+}
+
+const I18nContext = createContext<I18nContextType | null>(null);
+
+export function I18nProvider({ children }: { children: ReactNode }) {
+  const [locale, setLocaleState] = useState<Locale>("uz");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("sumkaxona_locale") as Locale | null;
+    if (stored && translations[stored]) {
+      setLocaleState(stored);
+    }
+  }, []);
+
+  const setLocale = useCallback((newLocale: Locale) => {
+    setLocaleState(newLocale);
+    localStorage.setItem("sumkaxona_locale", newLocale);
+  }, []);
+
+  const t = useCallback((key: string): string => {
+    return translations[locale][key] || key;
+  }, [locale]);
+
+  return (
+    <I18nContext.Provider value={{ locale, setLocale, t }}>
+      {children}
+    </I18nContext.Provider>
+  );
+}
+
+export function useI18n() {
+  const ctx = useContext(I18nContext);
+  if (!ctx) throw new Error("useI18n must be inside I18nProvider");
+  return ctx;
+}

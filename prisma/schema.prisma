@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String   @default("Admin")
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  order    Int       @default(0)
+  products Product[]
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  name        String
+  description String      @default("")
+  price       Int
+  oldPrice    Int?
+  tag         String      @default("")
+  image       String      @default("")
+  stock       Int         @default(0)
+  colors      Json        @default("[]")
+  specs       Json        @default("[]")
+  categoryId  String?
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  customer  String
+  phone     String
+  address   String
+  total     Int
+  status    String      @default("kutilmoqda")
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name      String
+  qty       Int
+  price     Int
+}
+
+model PaymentSettings {
+  id               String @id @default("default")
+  cardNumber       String @default("8600 1234 5678 9012")
+  cardOwner        String @default("AVERA SHOP")
+  telegramUsername String @default("@avera_admin")
+}
+
+model SiteSettings {
+  id              String @id @default("default")
+  heroTitle       String @default("Tabiiy charm sumkalar kolleksiyasi")
+  heroDiscount    String @default("20")
+  freeDeliveryMin Int    @default(500000)
+  contactPhone    String @default("+998 90 123 45 67")
+  telegram        String @default("https://t.me/avera")
+  instagram       String @default("https://instagram.com/avera")
+}
