@@ -28,11 +28,11 @@ export function AdminLogin() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "#F7F8FA",
+      background: "var(--bg-page)",
       padding: 20,
     }}>
       <div style={{
-        background: "#fff",
+        background: "var(--bg-surface)",
         borderRadius: 20,
         padding: 40,
         width: "100%",
@@ -43,20 +43,20 @@ export function AdminLogin() {
           <h1 style={{
             fontSize: 28,
             fontWeight: 500,
-            fontFamily: "var(--font-brand)",
+            fontFamily: "var(--font-display)",
             letterSpacing: "0.04em",
             margin: "0 0 8px",
           }}>
             AVERA <span style={{ color: "var(--accent)" }}>Admin</span>
           </h1>
-          <p style={{ fontSize: 14, color: "#64748B", margin: 0 }}>
+          <p style={{ fontSize: 14, color: "var(--text-muted)", margin: 0 }}>
             Admin paneliga kirish
           </p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
-            <label style={{ fontSize: 13, fontWeight: 600, color: "#64748B", marginBottom: 6, display: "block" }}>
+            <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text-muted)", marginBottom: 6, display: "block" }}>
               Email
             </label>
             <input
@@ -68,7 +68,7 @@ export function AdminLogin() {
               style={{
                 width: "100%",
                 height: 48,
-                border: "1px solid #E2E8F0",
+                border: "1px solid var(--border)",
                 borderRadius: 12,
                 padding: "0 16px",
                 fontSize: 15,
@@ -78,7 +78,7 @@ export function AdminLogin() {
           </div>
 
           <div>
-            <label style={{ fontSize: 13, fontWeight: 600, color: "#64748B", marginBottom: 6, display: "block" }}>
+            <label style={{ fontSize: 13, fontWeight: 600, color: "var(--text-muted)", marginBottom: 6, display: "block" }}>
               Parol
             </label>
             <input
@@ -90,7 +90,7 @@ export function AdminLogin() {
               style={{
                 width: "100%",
                 height: 48,
-                border: "1px solid #E2E8F0",
+                border: "1px solid var(--border)",
                 borderRadius: 12,
                 padding: "0 16px",
                 fontSize: 15,
@@ -102,9 +102,9 @@ export function AdminLogin() {
           {error && (
             <div style={{
               padding: "12px 16px",
-              background: "#FEF2F2",
+              background: "var(--danger-bg)",
               borderRadius: 10,
-              color: "#EF4444",
+              color: "var(--danger)",
               fontSize: 14,
               fontWeight: 500,
             }}>
@@ -119,7 +119,7 @@ export function AdminLogin() {
               width: "100%",
               height: 50,
               background: "var(--accent)",
-              color: "#fff",
+              color: "var(--bg-surface)",
               border: "none",
               borderRadius: 12,
               fontSize: 15,

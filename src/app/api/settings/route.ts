@@ -2,12 +2,29 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminFromRequest } from "@/lib/auth";
 
-export async function GET() {
-  let settings = await prisma.siteSettings.findUnique({ where: { id: "default" } });
+const FIELDS = [
+  "heroBadge",
+  "heroTitle",
+  "heroSubtitle",
+  "heroDiscount",
+  "heroImage",
+  "heroCtaText",
+  "heroCtaLink",
+  "featuredTitle",
+  "contactPhone",
+  "telegram",
+  "instagram",
+  "address",
+  "workHours",
+  "footerAbout",
+] as const;
 
-  if (!settings) {
-    settings = await prisma.siteSettings.create({ data: { id: "default" } });
-  }
+export async function GET() {
+  const settings = await prisma.siteSettings.upsert({
+    where: { id: "default" },
+    update: {},
+    create: { id: "default" },
+  });
 
   return NextResponse.json(settings);
 }
@@ -20,25 +37,19 @@ export async function PUT(request: Request) {
 
   const body = await request.json();
 
+  // Faqat yuborilgan maydonlar yangilanadi — qolganlari tegilmaydi.
+  const data: Record<string, string | number> = {};
+  for (const key of FIELDS) {
+    if (typeof body[key] === "string") data[key] = body[key];
+  }
+  if (body.freeDeliveryMin !== undefined && body.freeDeliveryMin !== null) {
+    data.freeDeliveryMin = Number(body.freeDeliveryMin) || 0;
+  }
+
   const settings = await prisma.siteSettings.upsert({
     where: { id: "default" },
-    update: {
-      heroTitle: body.heroTitle,
-      heroDiscount: body.heroDiscount,
-      freeDeliveryMin: body.freeDeliveryMin,
-      contactPhone: body.contactPhone,
-      telegram: body.telegram,
-      instagram: body.instagram,
-    },
-    create: {
-      id: "default",
-      heroTitle: body.heroTitle,
-      heroDiscount: body.heroDiscount,
-      freeDeliveryMin: body.freeDeliveryMin,
-      contactPhone: body.contactPhone,
-      telegram: body.telegram,
-      instagram: body.instagram,
-    },
+    update: data,
+    create: { id: "default", ...data },
   });
 
   return NextResponse.json(settings);

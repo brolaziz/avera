@@ -21,10 +21,10 @@ export default function OrdersPage() {
   };
 
   const statusColors: Record<string, { bg: string; color: string }> = {
-    kutilmoqda: { bg: "#FEF3C7", color: "#D97706" },
-    tolangan: { bg: "#ECFDF5", color: "#10B981" },
+    kutilmoqda: { bg: "var(--gold-wash)", color: "#8A6B33" },
+    tolangan: { bg: "var(--success-bg)", color: "var(--success)" },
     yolda: { bg: "var(--accent-tint)", color: "var(--accent)" },
-    bekor: { bg: "#FEE2E2", color: "#EF4444" },
+    bekor: { bg: "var(--danger-bg)", color: "var(--danger)" },
   };
 
   const tabs = [
@@ -55,8 +55,8 @@ export default function OrdersPage() {
               padding: "10px 18px",
               borderRadius: 10,
               border: "none",
-              background: filterStatus === tab.key ? "var(--accent)" : "#fff",
-              color: filterStatus === tab.key ? "#fff" : "#0F172A",
+              background: filterStatus === tab.key ? "var(--accent)" : "var(--bg-surface)",
+              color: filterStatus === tab.key ? "var(--bg-surface)" : "var(--ink)",
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",
@@ -70,27 +70,27 @@ export default function OrdersPage() {
       </div>
 
       {/* Orders table */}
-      <div style={{ background: "#fff", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: "var(--bg-surface)", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(42,33,29,0.05)" }}>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                <th style={{ textAlign: "left", padding: "14px 16px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>№</th>
-                <th style={{ textAlign: "left", padding: "14px 16px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Mijoz</th>
-                <th style={{ textAlign: "left", padding: "14px 16px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Telefon</th>
-                <th style={{ textAlign: "left", padding: "14px 16px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Sana</th>
-                <th style={{ textAlign: "left", padding: "14px 16px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Jami</th>
-                <th style={{ textAlign: "left", padding: "14px 16px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Holat</th>
-                <th style={{ textAlign: "right", padding: "14px 16px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Amallar</th>
+              <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>№</th>
+                <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Mijoz</th>
+                <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Telefon</th>
+                <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Sana</th>
+                <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Jami</th>
+                <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Holat</th>
+                <th style={{ textAlign: "right", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Amallar</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map(order => (
-                <tr key={order.id} style={{ borderBottom: "1px solid #E2E8F0" }}>
+                <tr key={order.id} style={{ borderBottom: "1px solid var(--border)" }}>
                   <td style={{ padding: "14px 16px", fontWeight: 600 }}>{order.id}</td>
                   <td style={{ padding: "14px 16px" }}>{order.customer}</td>
-                  <td style={{ padding: "14px 16px", color: "#64748B" }}>{order.phone}</td>
-                  <td style={{ padding: "14px 16px", color: "#64748B" }}>{order.date}</td>
+                  <td style={{ padding: "14px 16px", color: "var(--text-muted)" }}>{order.phone}</td>
+                  <td style={{ padding: "14px 16px", color: "var(--text-muted)" }}>{order.date}</td>
                   <td style={{ padding: "14px 16px", fontWeight: 600 }}>{formatPrice(order.total)} so'm</td>
                   <td style={{ padding: "14px 16px" }}>
                     <span style={{
@@ -99,8 +99,8 @@ export default function OrdersPage() {
                       borderRadius: 6,
                       fontSize: 12,
                       fontWeight: 600,
-                      background: statusColors[order.status]?.bg || "#F1F5F9",
-                      color: statusColors[order.status]?.color || "#64748B",
+                      background: statusColors[order.status]?.bg || "var(--bg-fill)",
+                      color: statusColors[order.status]?.color || "var(--text-muted)",
                     }}>
                       {statusLabels[order.status] || order.status}
                     </span>
@@ -112,7 +112,7 @@ export default function OrdersPage() {
                           onClick={() => handleStatusChange(order.id, "tolangan")}
                           style={{
                             padding: "6px 14px", border: "none", borderRadius: 8,
-                            background: "#ECFDF5", color: "#10B981", fontSize: 13,
+                            background: "var(--success-bg)", color: "var(--success)", fontSize: 13,
                             fontWeight: 600, cursor: "pointer",
                           }}
                         >
@@ -122,7 +122,7 @@ export default function OrdersPage() {
                           onClick={() => handleStatusChange(order.id, "bekor")}
                           style={{
                             padding: "6px 14px", border: "none", borderRadius: 8,
-                            background: "#FEE2E2", color: "#EF4444", fontSize: 13,
+                            background: "var(--danger-bg)", color: "var(--danger)", fontSize: 13,
                             fontWeight: 600, cursor: "pointer",
                           }}
                         >
@@ -134,8 +134,8 @@ export default function OrdersPage() {
                         value={order.status}
                         onChange={e => handleStatusChange(order.id, e.target.value as Order["status"])}
                         style={{
-                          padding: "6px 10px", border: "1px solid #E2E8F0",
-                          borderRadius: 8, fontSize: 13, background: "#fff",
+                          padding: "6px 10px", border: "1px solid var(--border)",
+                          borderRadius: 8, fontSize: 13, background: "var(--bg-surface)",
                           cursor: "pointer", outline: "none",
                         }}
                       >
@@ -152,7 +152,7 @@ export default function OrdersPage() {
           </table>
         </div>
         {filtered.length === 0 && (
-          <div style={{ padding: 40, textAlign: "center", color: "#64748B" }}>
+          <div style={{ padding: 40, textAlign: "center", color: "var(--text-muted)" }}>
             Buyurtmalar topilmadi
           </div>
         )}

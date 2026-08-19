@@ -20,6 +20,7 @@ model Category {
   name     String
   slug     String    @unique
   order    Int       @default(0)
+  visible  Boolean   @default(true)
   products Product[]
 }
 
@@ -32,7 +33,9 @@ model Product {
   oldPrice    Int?
   tag         String      @default("")
   image       String      @default("")
+  images      Json        @default("[]")
   stock       Int         @default(0)
+  available   Boolean     @default(true)
   colors      Json        @default("[]")
   specs       Json        @default("[]")
   categoryId  String?
@@ -73,11 +76,66 @@ model PaymentSettings {
 }
 
 model SiteSettings {
-  id              String @id @default("default")
-  heroTitle       String @default("Tabiiy charm sumkalar kolleksiyasi")
-  heroDiscount    String @default("20")
-  freeDeliveryMin Int    @default(500000)
-  contactPhone    String @default("+998 90 123 45 67")
-  telegram        String @default("https://t.me/avera")
-  instagram       String @default("https://instagram.com/avera")
+  id String @id @default("default")
+
+  // Hero / banner — admin paneldan boshqariladi
+  heroBadge    String @default("")
+  heroTitle    String @default("Tabiiy charm sumkalar kolleksiyasi")
+  heroSubtitle String @default("")
+  heroDiscount String @default("")
+  heroImage    String @default("")
+  heroCtaText  String @default("Xarid qilish")
+  heroCtaLink  String @default("/katalog")
+
+  // Mashhur mahsulotlar bo'limi
+  featuredTitle String @default("Mashhur mahsulotlar")
+
+  // Yetkazish
+  freeDeliveryMin Int @default(500000)
+
+  // Aloqa ma'lumotlari
+  contactPhone String @default("")
+  telegram     String @default("")
+  instagram    String @default("")
+  address      String @default("")
+  workHours    String @default("")
+
+  // Footer
+  footerAbout String @default("")
+}
+
+model FooterSection {
+  id      String       @id @default(cuid())
+  title   String
+  order   Int          @default(0)
+  visible Boolean      @default(true)
+  links   FooterLink[]
+}
+
+model FooterLink {
+  id        String        @id @default(cuid())
+  sectionId String
+  section   FooterSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  label     String
+  url       String        @default("#")
+  order     Int           @default(0)
+  visible   Boolean       @default(true)
+}
+
+model PartnerRequest {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  telegram  String   @default("")
+  message   String   @default("")
+  status    String   @default("yangi")
+  createdAt DateTime @default(now())
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  mimeType  String
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
 }

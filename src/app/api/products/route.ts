@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminFromRequest } from "@/lib/auth";
+import { serializeProduct, generateSlug } from "@/lib/serialize";
+import { resolveCategoryId } from "@/lib/db-helpers";
 
 export async function GET() {
   const products = await prisma.product.findMany({
@@ -8,25 +10,7 @@ export async function GET() {
     orderBy: { createdAt: "desc" },
   });
 
-  const formatted = products.map((p) => ({
-    id: p.id,
-    slug: p.slug,
-    name: p.name,
-    color: (p.colors as { name: string; hex: string }[])[0]?.name || "",
-    price: formatPrice(p.price),
-    priceNum: p.price,
-    oldPrice: p.oldPrice ? formatPrice(p.oldPrice) : "",
-    tag: p.tag,
-    colors: p.colors as { name: string; hex: string }[],
-    specs: p.specs as { k: string; v: string }[],
-    image: p.image,
-    description: p.description,
-    stock: p.stock,
-    category: p.category?.name || "",
-    createdAt: p.createdAt.toISOString().split("T")[0],
-  }));
-
-  return NextResponse.json(formatted);
+  return NextResponse.json(products.map(serializeProduct));
 }
 
 export async function POST(request: Request) {
@@ -37,12 +21,7 @@ export async function POST(request: Request) {
 
   const body = await request.json();
 
-  // Find or create category
-  let categoryId: string | null = null;
-  if (body.category) {
-    const cat = await prisma.category.findFirst({ where: { name: body.category } });
-    if (cat) categoryId = cat.id;
-  }
+  const categoryId = await resolveCategoryId(body);
 
   const product = await prisma.product.create({
     data: {
@@ -53,25 +32,15 @@ export async function POST(request: Request) {
       oldPrice: body.oldPriceNum || null,
       tag: body.tag || "",
       image: body.image || "",
+      images: body.images || [],
       stock: body.stock || 0,
+      available: body.available ?? true,
       colors: body.colors || [],
       specs: body.specs || [],
       categoryId,
     },
+    include: { category: true },
   });
 
-  return NextResponse.json(product, { status: 201 });
-}
-
-function formatPrice(n: number): string {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-}
-
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .trim();
+  return NextResponse.json(serializeProduct(product), { status: 201 });
 }

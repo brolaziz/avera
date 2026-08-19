@@ -3,7 +3,8 @@
 import { usePathname } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ConfirmModal } from "@/components/ConfirmModal";
+import { FloatingCart } from "@/components/FloatingCart";
+import { SiteProvider } from "@/lib/site";
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,15 +15,13 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <>
+    <SiteProvider>
       <div className="container-main">
         <Header />
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
         <Footer />
       </div>
-      <ConfirmModal />
-    </>
+      <FloatingCart />
+    </SiteProvider>
   );
 }

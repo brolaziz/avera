@@ -37,7 +37,7 @@ export default function ProductsPage() {
             gap: 8,
             padding: "10px 20px",
             background: "var(--accent)",
-            color: "#fff",
+            color: "var(--bg-surface)",
             borderRadius: 10,
             fontSize: 14,
             fontWeight: 600,
@@ -54,7 +54,7 @@ export default function ProductsPage() {
       {/* Search and view toggle */}
       <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
         <div style={{ flex: 1, minWidth: 200, position: "relative" }}>
-          <svg width="18" height="18" fill="none" stroke="#8B7561" strokeWidth={1.5} viewBox="0 0 24 24"
+          <svg width="18" height="18" fill="none" stroke="var(--text-soft)" strokeWidth={1.5} viewBox="0 0 24 24"
             style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)" }}>
             <path strokeLinecap="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
           </svg>
@@ -66,24 +66,24 @@ export default function ProductsPage() {
             style={{
               width: "100%",
               height: 44,
-              border: "1px solid #DDD3C4",
+              border: "1px solid var(--border)",
               borderRadius: 10,
               padding: "0 14px 0 42px",
               fontSize: 14,
-              background: "#fff",
+              background: "var(--bg-surface)",
               outline: "none",
             }}
           />
         </div>
-        <div style={{ display: "flex", border: "1px solid #DDD3C4", borderRadius: 10, overflow: "hidden" }}>
+        <div style={{ display: "flex", border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
           <button
             onClick={() => setViewMode("table")}
             style={{
               padding: "0 14px",
               height: 44,
               border: "none",
-              background: viewMode === "table" ? "var(--accent)" : "#fff",
-              color: viewMode === "table" ? "#fff" : "#6B5A4C",
+              background: viewMode === "table" ? "var(--accent)" : "var(--bg-surface)",
+              color: viewMode === "table" ? "var(--bg-surface)" : "var(--text-muted)",
               cursor: "pointer",
             }}
           >
@@ -97,9 +97,9 @@ export default function ProductsPage() {
               padding: "0 14px",
               height: 44,
               border: "none",
-              borderLeft: "1px solid #DDD3C4",
-              background: viewMode === "grid" ? "var(--accent)" : "#fff",
-              color: viewMode === "grid" ? "#fff" : "#6B5A4C",
+              borderLeft: "1px solid var(--border)",
+              background: viewMode === "grid" ? "var(--accent)" : "var(--bg-surface)",
+              color: viewMode === "grid" ? "var(--bg-surface)" : "var(--text-muted)",
               cursor: "pointer",
             }}
           >
@@ -112,35 +112,35 @@ export default function ProductsPage() {
 
       {/* Table view */}
       {viewMode === "table" && (
-        <div style={{ background: "#fff", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(43,31,23,0.04)" }}>
+        <div style={{ background: "var(--bg-surface)", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(42,33,29,0.05)" }}>
           <div style={{ overflowX: "auto" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
               <thead>
-                <tr style={{ borderBottom: "1px solid #E6DCCD" }}>
-                  <th style={{ textAlign: "left", padding: "14px 16px", color: "#6B5A4C", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Rasm</th>
-                  <th style={{ textAlign: "left", padding: "14px 16px", color: "#6B5A4C", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Nomi</th>
-                  <th style={{ textAlign: "left", padding: "14px 16px", color: "#6B5A4C", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Narxi</th>
-                  <th style={{ textAlign: "left", padding: "14px 16px", color: "#6B5A4C", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Kategoriya</th>
-                  <th style={{ textAlign: "left", padding: "14px 16px", color: "#6B5A4C", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Zaxira</th>
-                  <th style={{ textAlign: "left", padding: "14px 16px", color: "#6B5A4C", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Holat</th>
-                  <th style={{ textAlign: "right", padding: "14px 16px", color: "#6B5A4C", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Amallar</th>
+                <tr style={{ borderBottom: "1px solid var(--border-soft)" }}>
+                  <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Rasm</th>
+                  <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Nomi</th>
+                  <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Narxi</th>
+                  <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Kategoriya</th>
+                  <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Zaxira</th>
+                  <th style={{ textAlign: "left", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Holat</th>
+                  <th style={{ textAlign: "right", padding: "14px 16px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>Amallar</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map(product => (
-                  <tr key={product.id} style={{ borderBottom: "1px solid #E6DCCD" }}>
+                  <tr key={product.id} style={{ borderBottom: "1px solid var(--border-soft)" }}>
                     <td style={{ padding: "10px 16px" }}>
                       <div style={{
                         width: 48,
                         height: 48,
                         borderRadius: 8,
-                        background: product.image ? `url(${product.image}) center/cover` : product.colors[0]?.hex || "#DDD3C4",
-                        border: "1px solid #E6DCCD",
+                        background: product.image ? `url(${product.image}) center/cover` : product.colors[0]?.hex || "var(--border)",
+                        border: "1px solid var(--border-soft)",
                       }} />
                     </td>
                     <td style={{ padding: "10px 16px", fontWeight: 600 }}>{product.name}</td>
                     <td style={{ padding: "10px 16px" }}>{formatPrice(product.priceNum)} so'm</td>
-                    <td style={{ padding: "10px 16px", color: "#6B5A4C" }}>{product.category}</td>
+                    <td style={{ padding: "10px 16px", color: "var(--text-muted)" }}>{product.category}</td>
                     <td style={{ padding: "10px 16px" }}>{product.stock} dona</td>
                     <td style={{ padding: "10px 16px" }}>
                       <span style={{
@@ -149,10 +149,10 @@ export default function ProductsPage() {
                         borderRadius: 6,
                         fontSize: 12,
                         fontWeight: 600,
-                        background: product.stock > 0 ? "#E4EBDB" : "#F6E3DC",
-                        color: product.stock > 0 ? "#4C6B3C" : "#A83A22",
+                        background: product.inStock ? "var(--success-bg)" : "var(--danger-bg)",
+                        color: product.inStock ? "var(--success)" : "var(--danger)",
                       }}>
-                        {product.stock > 0 ? "Mavjud" : "Tugagan"}
+                        {product.inStock ? "Mavjud" : product.available ? "Tugagan" : "Yashirilgan"}
                       </span>
                     </td>
                     <td style={{ padding: "10px 16px", textAlign: "right" }}>
@@ -161,10 +161,10 @@ export default function ProductsPage() {
                           href={`/admin/mahsulotlar/${product.id}`}
                           style={{
                             padding: "6px 12px",
-                            border: "1px solid #DDD3C4",
+                            border: "1px solid var(--border)",
                             borderRadius: 8,
                             fontSize: 13,
-                            color: "#2B1F17",
+                            color: "var(--ink)",
                             textDecoration: "none",
                             fontWeight: 500,
                           }}
@@ -175,11 +175,11 @@ export default function ProductsPage() {
                           onClick={() => setDeleteConfirm(product.id)}
                           style={{
                             padding: "6px 12px",
-                            border: "1px solid #F6E3DC",
+                            border: "1px solid var(--danger-bg)",
                             borderRadius: 8,
                             fontSize: 13,
-                            color: "#A83A22",
-                            background: "#F6E3DC",
+                            color: "var(--danger)",
+                            background: "var(--danger-bg)",
                             cursor: "pointer",
                             fontWeight: 500,
                           }}
@@ -194,7 +194,7 @@ export default function ProductsPage() {
             </table>
           </div>
           {filtered.length === 0 && (
-            <div style={{ padding: 40, textAlign: "center", color: "#6B5A4C" }}>
+            <div style={{ padding: 40, textAlign: "center", color: "var(--text-muted)" }}>
               Mahsulot topilmadi
             </div>
           )}
@@ -205,15 +205,15 @@ export default function ProductsPage() {
       {viewMode === "grid" && (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 16 }}>
           {filtered.map(product => (
-            <div key={product.id} style={{ background: "#fff", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(43,31,23,0.04)" }}>
+            <div key={product.id} style={{ background: "var(--bg-surface)", borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 8px rgba(42,33,29,0.05)" }}>
               <div style={{
                 height: 160,
-                background: product.image ? `url(${product.image}) center/cover` : product.colors[0]?.hex || "#DDD3C4",
-                borderBottom: "1px solid #E6DCCD",
+                background: product.image ? `url(${product.image}) center/cover` : product.colors[0]?.hex || "var(--border)",
+                borderBottom: "1px solid var(--border-soft)",
               }} />
               <div style={{ padding: 16 }}>
                 <h3 style={{ margin: "0 0 6px", fontSize: 16, fontWeight: 600 }}>{product.name}</h3>
-                <p style={{ margin: "0 0 4px", fontSize: 14, color: "#6B5A4C" }}>{product.category}</p>
+                <p style={{ margin: "0 0 4px", fontSize: 14, color: "var(--text-muted)" }}>{product.category}</p>
                 <p style={{ margin: "0 0 12px", fontSize: 15, fontWeight: 700 }}>{formatPrice(product.priceNum)} so'm</p>
                 <div style={{ display: "flex", gap: 8 }}>
                   <Link
@@ -221,10 +221,10 @@ export default function ProductsPage() {
                     style={{
                       flex: 1,
                       padding: "8px",
-                      border: "1px solid #DDD3C4",
+                      border: "1px solid var(--border)",
                       borderRadius: 8,
                       fontSize: 13,
-                      color: "#2B1F17",
+                      color: "var(--ink)",
                       textDecoration: "none",
                       textAlign: "center",
                       fontWeight: 500,
@@ -236,11 +236,11 @@ export default function ProductsPage() {
                     onClick={() => setDeleteConfirm(product.id)}
                     style={{
                       padding: "8px 12px",
-                      border: "1px solid #F6E3DC",
+                      border: "1px solid var(--danger-bg)",
                       borderRadius: 8,
                       fontSize: 13,
-                      color: "#A83A22",
-                      background: "#F6E3DC",
+                      color: "var(--danger)",
+                      background: "var(--danger-bg)",
                       cursor: "pointer",
                       fontWeight: 500,
                     }}
@@ -252,7 +252,7 @@ export default function ProductsPage() {
             </div>
           ))}
           {filtered.length === 0 && (
-            <div style={{ padding: 40, textAlign: "center", color: "#6B5A4C", gridColumn: "1 / -1" }}>
+            <div style={{ padding: 40, textAlign: "center", color: "var(--text-muted)", gridColumn: "1 / -1" }}>
               Mahsulot topilmadi
             </div>
           )}
@@ -261,10 +261,10 @@ export default function ProductsPage() {
 
       {/* Delete confirmation modal */}
       {deleteConfirm && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
-          <div style={{ background: "#fff", borderRadius: 16, padding: 32, maxWidth: 400, width: "90%" }}>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(42,33,29,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+          <div style={{ background: "var(--bg-surface)", borderRadius: 16, padding: 32, maxWidth: 400, width: "90%" }}>
             <h3 style={{ margin: "0 0 12px", fontSize: 18, fontWeight: 600 }}>Mahsulotni o'chirish</h3>
-            <p style={{ margin: "0 0 24px", color: "#6B5A4C", fontSize: 14 }}>
+            <p style={{ margin: "0 0 24px", color: "var(--text-muted)", fontSize: 14 }}>
               Haqiqatan ham bu mahsulotni o'chirmoqchimisiz? Bu amalni qaytarib bo'lmaydi.
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
@@ -272,9 +272,9 @@ export default function ProductsPage() {
                 onClick={() => setDeleteConfirm(null)}
                 style={{
                   padding: "10px 20px",
-                  border: "1px solid #DDD3C4",
+                  border: "1px solid var(--border)",
                   borderRadius: 10,
-                  background: "#fff",
+                  background: "var(--bg-surface)",
                   fontSize: 14,
                   fontWeight: 600,
                   cursor: "pointer",
@@ -288,8 +288,8 @@ export default function ProductsPage() {
                   padding: "10px 20px",
                   border: "none",
                   borderRadius: 10,
-                  background: "#A83A22",
-                  color: "#fff",
+                  background: "var(--danger)",
+                  color: "var(--bg-surface)",
                   fontSize: 14,
                   fontWeight: 600,
                   cursor: "pointer",

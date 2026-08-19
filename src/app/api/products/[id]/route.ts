@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAdminFromRequest } from "@/lib/auth";
+import { serializeProduct } from "@/lib/serialize";
+import { resolveCategoryId } from "@/lib/db-helpers";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -13,24 +15,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Mahsulot topilmadi" }, { status: 404 });
   }
 
-  return NextResponse.json({
-    id: product.id,
-    slug: product.slug,
-    name: product.name,
-    color: (product.colors as { name: string; hex: string }[])[0]?.name || "",
-    price: formatPrice(product.price),
-    priceNum: product.price,
-    oldPrice: product.oldPrice ? formatPrice(product.oldPrice) : "",
-    oldPriceNum: product.oldPrice,
-    tag: product.tag,
-    colors: product.colors,
-    specs: product.specs,
-    image: product.image,
-    description: product.description,
-    stock: product.stock,
-    category: product.category?.name || "",
-    createdAt: product.createdAt.toISOString().split("T")[0],
-  });
+  return NextResponse.json(serializeProduct(product));
 }
 
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -42,11 +27,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
   const body = await request.json();
 
-  let categoryId: string | null = null;
-  if (body.category) {
-    const cat = await prisma.category.findFirst({ where: { name: body.category } });
-    if (cat) categoryId = cat.id;
-  }
+  const categoryId = await resolveCategoryId(body);
 
   const product = await prisma.product.update({
     where: { id },
@@ -58,14 +39,17 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       oldPrice: body.oldPriceNum || null,
       tag: body.tag || "",
       image: body.image || "",
+      images: body.images || [],
       stock: body.stock || 0,
+      available: body.available ?? true,
       colors: body.colors || [],
       specs: body.specs || [],
       categoryId,
     },
+    include: { category: true },
   });
 
-  return NextResponse.json(product);
+  return NextResponse.json(serializeProduct(product));
 }
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -78,8 +62,4 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   await prisma.product.delete({ where: { id } });
 
   return NextResponse.json({ success: true });
-}
-
-function formatPrice(n: number): string {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }

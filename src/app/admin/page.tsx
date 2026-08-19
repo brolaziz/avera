@@ -19,9 +19,9 @@ export default function AdminDashboard() {
 
   const stats = [
     { label: t("admin.products_count"), value: totalProducts.toString(), color: "var(--accent)" },
-    { label: t("admin.orders"), value: totalOrders.toString(), color: "#10B981" },
+    { label: t("admin.orders"), value: totalOrders.toString(), color: "var(--success)" },
     { label: t("admin.revenue"), value: formatPrice(revenue) + " so'm", color: "var(--accent)" },
-    { label: t("admin.pending_orders"), value: pendingOrders.toString(), color: "#D97706" },
+    { label: t("admin.pending_orders"), value: pendingOrders.toString(), color: "#8A6B33" },
   ];
 
   return (
@@ -38,7 +38,7 @@ export default function AdminDashboard() {
             gap: 8,
             padding: "10px 20px",
             background: "var(--accent)",
-            color: "#fff",
+            color: "var(--bg-surface)",
             borderRadius: 10,
             fontSize: 14,
             fontWeight: 600,
@@ -58,10 +58,10 @@ export default function AdminDashboard() {
           <div
             key={i}
             style={{
-              background: "#fff",
+              background: "var(--bg-surface)",
               borderRadius: 16,
               padding: "22px 20px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+              boxShadow: "0 2px 8px rgba(42,33,29,0.05)",
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
@@ -69,14 +69,14 @@ export default function AdminDashboard() {
                 <div style={{ width: 12, height: 12, borderRadius: 3, background: stat.color }} />
               </div>
             </div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: "#0F172A", marginBottom: 4 }}>{stat.value}</div>
-            <div style={{ fontSize: 13, color: "#64748B" }}>{stat.label}</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "var(--ink)", marginBottom: 4 }}>{stat.value}</div>
+            <div style={{ fontSize: 13, color: "var(--text-muted)" }}>{stat.label}</div>
           </div>
         ))}
       </div>
 
       {/* Recent Orders */}
-      <div style={{ background: "#fff", borderRadius: 16, padding: "24px", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+      <div style={{ background: "var(--bg-surface)", borderRadius: 16, padding: "24px", boxShadow: "0 2px 8px rgba(42,33,29,0.05)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <h2 style={{ fontSize: 20, margin: 0, fontWeight: 700 }}>
             {t("admin.recent_orders")}
@@ -89,20 +89,20 @@ export default function AdminDashboard() {
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #E2E8F0" }}>
-                <th style={{ textAlign: "left", padding: "10px 12px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.order")}</th>
-                <th style={{ textAlign: "left", padding: "10px 12px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.customer")}</th>
-                <th style={{ textAlign: "left", padding: "10px 12px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.date")}</th>
-                <th style={{ textAlign: "left", padding: "10px 12px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.total")}</th>
-                <th style={{ textAlign: "left", padding: "10px 12px", color: "#64748B", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.status")}</th>
+              <tr style={{ borderBottom: "1px solid var(--border)" }}>
+                <th style={{ textAlign: "left", padding: "10px 12px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.order")}</th>
+                <th style={{ textAlign: "left", padding: "10px 12px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.customer")}</th>
+                <th style={{ textAlign: "left", padding: "10px 12px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.date")}</th>
+                <th style={{ textAlign: "left", padding: "10px 12px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.total")}</th>
+                <th style={{ textAlign: "left", padding: "10px 12px", color: "var(--text-muted)", fontWeight: 600, fontSize: 12, textTransform: "uppercase" }}>{t("admin.status")}</th>
               </tr>
             </thead>
             <tbody>
               {recentOrders.map(order => (
-                <tr key={order.id} style={{ borderBottom: "1px solid #E2E8F0" }}>
+                <tr key={order.id} style={{ borderBottom: "1px solid var(--border)" }}>
                   <td style={{ padding: "14px 12px", fontWeight: 600 }}>{order.id}</td>
                   <td style={{ padding: "14px 12px" }}>{order.customer}</td>
-                  <td style={{ padding: "14px 12px", color: "#64748B" }}>{order.date}</td>
+                  <td style={{ padding: "14px 12px", color: "var(--text-muted)" }}>{order.date}</td>
                   <td style={{ padding: "14px 12px", fontWeight: 600 }}>{formatPrice(order.total)} so'm</td>
                   <td style={{ padding: "14px 12px" }}>
                     <span style={{
@@ -111,8 +111,8 @@ export default function AdminDashboard() {
                       borderRadius: 6,
                       fontSize: 12,
                       fontWeight: 600,
-                      background: order.status === "tolangan" ? "#ECFDF5" : order.status === "kutilmoqda" ? "#FEF3C7" : order.status === "bekor" ? "#FEE2E2" : "var(--accent-tint)",
-                      color: order.status === "tolangan" ? "#10B981" : order.status === "kutilmoqda" ? "#D97706" : order.status === "bekor" ? "#EF4444" : "var(--accent)",
+                      background: order.status === "tolangan" ? "var(--success-bg)" : order.status === "kutilmoqda" ? "var(--gold-wash)" : order.status === "bekor" ? "var(--danger-bg)" : "var(--accent-tint)",
+                      color: order.status === "tolangan" ? "var(--success)" : order.status === "kutilmoqda" ? "#8A6B33" : order.status === "bekor" ? "var(--danger)" : "var(--accent)",
                     }}>
                       {order.status === "tolangan" ? t("admin.status.paid") : order.status === "kutilmoqda" ? t("admin.status.pending") : order.status === "bekor" ? t("admin.status.cancelled") : t("admin.status.transit")}
                     </span>

@@ -1,11 +1,10 @@
 "use client";
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
-import { type Product } from "./data";
 import { api } from "./api";
-import type { Order } from "./api";
+import type { Order, Product } from "./api";
 
-export type { Product } from "./data";
+export type { Product } from "./api";
 
 export interface CartItem {
   product: Product;
@@ -16,13 +15,10 @@ export interface CartItem {
 interface StoreContextType {
   cart: CartItem[];
   cartCount: number;
-  confirmOpen: boolean;
   addToCart: (product: Product, color: string, qty: number) => void;
   removeFromCart: (index: number) => void;
   updateQty: (index: number, qty: number) => void;
   clearCart: () => void;
-  openConfirm: () => void;
-  closeConfirm: () => void;
   cartTotal: number;
   products: Product[];
   lastAdded: string | null;
@@ -34,27 +30,56 @@ interface StoreContextType {
 
 const StoreContext = createContext<StoreContextType | null>(null);
 
+const CART_KEY = "avera_cart";
+
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [confirmOpen, setConfirmOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [lastAdded, setLastAdded] = useState<string | null>(null);
   const [productsLoading, setProductsLoading] = useState(true);
+  const [cartHydrated, setCartHydrated] = useState(false);
 
   useEffect(() => {
+    // Mahsulotlar faqat bazadan keladi. API bo'sh qaytarsa, sayt ham bo'sh ko'rinadi —
+    // o'chirilgan mahsulot o'rnida namunaviy kontent qolib ketmasligi uchun.
     api.getProducts()
       .then((data) => {
-        setProducts(data as unknown as Product[]);
-        setProductsLoading(false);
+        setProducts(data);
+        // Admin paneldan o'chirilgan mahsulot savatda ham qolib ketmasin,
+        // narxi/nomi o'zgargani esa yangilanadi.
+        setCart((prev) =>
+          prev
+            .map((item) => {
+              const fresh = data.find((p) => p.slug === item.product.slug);
+              return fresh ? { ...item, product: fresh } : null;
+            })
+            .filter((item): item is CartItem => item !== null)
+        );
       })
-      .catch(() => {
-        // Fallback to local data if API unavailable
-        import("./data").then(({ products: defaultProducts }) => {
-          setProducts(defaultProducts);
-          setProductsLoading(false);
-        });
-      });
+      .catch(() => setProducts([]))
+      .finally(() => setProductsLoading(false));
   }, []);
+
+  // Savat sahifa yangilanganda ham saqlanib qoladi
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(CART_KEY);
+      if (stored) setCart(JSON.parse(stored));
+    } catch {
+      // buzilgan saqlangan savat — e'tiborsiz qoldiriladi
+    }
+    setCartHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    // Saqlangan savat o'qilmaguncha yozmaymiz — aks holda u bo'sh savat bilan almashib ketadi.
+    if (!cartHydrated) return;
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    } catch {
+      // localStorage mavjud emas
+    }
+  }, [cart, cartHydrated]);
 
   const addToCart = useCallback((product: Product, color: string, qty: number) => {
     setCart(prev => {
@@ -87,42 +112,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const cartTotal = cart.reduce((sum, item) => sum + item.product.priceNum * item.qty, 0);
 
   const getPaymentSettings = useCallback(async () => {
-    try {
-      const settings = await api.getPaymentSettings();
-      return {
-        cardNumber: settings.cardNumber,
-        cardOwner: settings.cardOwner,
-        telegramUsername: settings.telegramUsername,
-      };
-    } catch {
-      return {
-        cardNumber: "8600 1234 5678 9012",
-        cardOwner: "AVERA SHOP",
-        telegramUsername: "@avera_admin",
-      };
-    }
+    const settings = await api.getPaymentSettings();
+    return {
+      cardNumber: settings.cardNumber,
+      cardOwner: settings.cardOwner,
+      telegramUsername: settings.telegramUsername,
+    };
   }, []);
 
   const placeOrder = useCallback(async (customer: string, phone: string, address: string): Promise<string> => {
     const items = cart.map(item => ({
       name: item.product.name,
-  qty: item.qty,
+      qty: item.qty,
       price: item.product.priceNum,
       productId: item.product.id,
     }));
 
-    try {
-      const order = await api.createOrder({ customer, phone, address, items });
-      // Save phone for profile orders lookup
-      localStorage.setItem("sumkaxona_phone", phone);
-      setCart([]);
-      return order.id;
-    } catch {
-      // Fallback: generate local order ID
-      const orderId = "ORD-" + String(Date.now()).slice(-6);
-      setCart([]);
-      return orderId;
-    }
+    const order = await api.createOrder({ customer, phone, address, items });
+    localStorage.setItem("sumkaxona_phone", phone);
+    setCart([]);
+    return order.id;
   }, [cart]);
 
   const getMyOrders = useCallback(async (): Promise<Order[]> => {
@@ -137,10 +146,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   return (
     <StoreContext.Provider value={{
-      cart, cartCount, confirmOpen, cartTotal, products, lastAdded, productsLoading,
+      cart, cartCount, cartTotal, products, lastAdded, productsLoading,
       addToCart, removeFromCart, updateQty, clearCart,
-      openConfirm: () => setConfirmOpen(true),
-      closeConfirm: () => setConfirmOpen(false),
       getPaymentSettings, placeOrder, getMyOrders,
     }}>
       {children}

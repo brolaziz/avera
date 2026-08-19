@@ -13,6 +13,8 @@ const navItems = [
   { href: "/admin/mahsulotlar", labelKey: "admin.products", icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
   { href: "/admin/katalog", labelKey: "admin.catalog", icon: "M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" },
   { href: "/admin/buyurtmalar", labelKey: "admin.orders", icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" },
+  { href: "/admin/hamkorlik", labelKey: "admin.partners", icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" },
+  { href: "/admin/footer", labelKey: "admin.footer", icon: "M4 6h16M4 12h16M4 18h10M3 3h18v18H3z" },
   { href: "/admin/sozlamalar", labelKey: "admin.settings", icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z" },
 ];
 
@@ -30,7 +32,7 @@ function AdminGate({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ fontSize: 16, color: "#64748B" }}>Yuklanmoqda...</div>
+        <div style={{ fontSize: 16, color: "var(--text-muted)" }}>Yuklanmoqda...</div>
       </div>
     );
   }
@@ -66,8 +68,8 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
         <aside
           style={{
             width: 260,
-            background: "#0F172A",
-            color: "#E2E8F0",
+            background: "var(--ink)",
+            color: "rgba(245,239,230,0.78)",
             display: "flex",
             flexDirection: "column",
             position: "fixed",
@@ -79,9 +81,9 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
           }}
           className="admin-sidebar"
         >
-          <div style={{ padding: "28px 24px 20px", borderBottom: "1px solid #1E293B" }}>
-            <Link href="/admin" style={{ color: "#E2E8F0", textDecoration: "none" }}>
-              <h1 style={{ fontSize: 22, margin: 0, fontWeight: 500, fontFamily: "var(--font-brand)", letterSpacing: "0.04em" }}>
+          <div style={{ padding: "28px 24px 20px", borderBottom: "1px solid rgba(245,239,230,0.12)" }}>
+            <Link href="/admin" style={{ color: "rgba(245,239,230,0.78)", textDecoration: "none" }}>
+              <h1 style={{ fontSize: 22, margin: 0, fontWeight: 500, fontFamily: "var(--font-display)", letterSpacing: "0.04em" }}>
                 AVERA <span style={{ color: "var(--accent)" }}>Admin</span>
               </h1>
             </Link>
@@ -99,7 +101,7 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
                   gap: 12,
                   padding: "12px 14px",
                   borderRadius: 10,
-                  color: isActive(item.href) ? "#fff" : "#94A3B8",
+                  color: isActive(item.href) ? "#fff" : "rgba(245,239,230,0.6)",
                   background: isActive(item.href) ? "var(--accent)" : "transparent",
                   textDecoration: "none",
                   fontSize: 14,
@@ -115,7 +117,7 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
             ))}
           </nav>
 
-          <div style={{ padding: "16px 12px", borderTop: "1px solid #1E293B", display: "flex", flexDirection: "column", gap: 4 }}>
+          <div style={{ padding: "16px 12px", borderTop: "1px solid rgba(245,239,230,0.12)", display: "flex", flexDirection: "column", gap: 4 }}>
             <Link
               href="/"
               style={{
@@ -124,7 +126,7 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
                 gap: 10,
                 padding: "12px 14px",
                 borderRadius: 10,
-                color: "#94A3B8",
+                color: "rgba(245,239,230,0.6)",
                 textDecoration: "none",
                 fontSize: 14,
                 fontWeight: 500,
@@ -143,7 +145,7 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
                 gap: 10,
                 padding: "12px 14px",
                 borderRadius: 10,
-                color: "#EF4444",
+                color: "#E0808A",
                 background: "none",
                 border: "none",
                 fontSize: 14,
@@ -164,8 +166,8 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }} className="admin-main">
           <header className="admin-mobile-header" style={{
             height: 60,
-            background: "#fff",
-            borderBottom: "1px solid #E2E8F0",
+            background: "var(--bg-surface)",
+            borderBottom: "1px solid var(--border)",
             display: "none",
             alignItems: "center",
             padding: "0 16px",
@@ -177,11 +179,11 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
               onClick={() => setSidebarOpen(true)}
               style={{ background: "none", border: "none", cursor: "pointer", padding: 8 }}
             >
-              <svg width="24" height="24" fill="none" stroke="#0F172A" strokeWidth={2} viewBox="0 0 24 24">
+              <svg width="24" height="24" fill="none" stroke="var(--ink)" strokeWidth={2} viewBox="0 0 24 24">
                 <path strokeLinecap="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
-            <span style={{ fontSize: 18, fontWeight: 500, fontFamily: "var(--font-brand)", letterSpacing: "0.04em", marginLeft: 12 }}>
+            <span style={{ fontSize: 18, fontWeight: 500, fontFamily: "var(--font-display)", letterSpacing: "0.04em", marginLeft: 12 }}>
               AVERA <span style={{ color: "var(--accent)" }}>Admin</span>
             </span>
             <div style={{ marginLeft: "auto" }}>
@@ -189,7 +191,7 @@ function AdminDashboardShell({ children }: { children: React.ReactNode }) {
             </div>
           </header>
 
-          <main style={{ flex: 1, padding: 32, background: "#F7F8FA", overflowY: "auto", minHeight: "100vh" }} className="admin-content">
+          <main style={{ flex: 1, padding: 32, background: "var(--bg-page)", overflowY: "auto", minHeight: "100vh" }} className="admin-content">
             {children}
           </main>
         </div>

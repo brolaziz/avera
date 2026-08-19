@@ -2,15 +2,12 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { api } from "./api";
-import type { Product, Order, Category } from "./api";
+import type {
+  Product, Order, Category, CategoryInput, SiteSettings,
+  FooterSection, PartnerRequest,
+} from "./api";
 
-export type { Product, Order, Category } from "./api";
-
-export interface OrderItem {
-  name: string;
-  qty: number;
-  price: number;
-}
+export type { Product, Order, Category, SiteSettings, FooterSection, PartnerRequest } from "./api";
 
 export interface PaymentSettings {
   cardNumber: string;
@@ -18,13 +15,7 @@ export interface PaymentSettings {
   telegramUsername: string;
 }
 
-export interface FullSiteSettings {
-  heroTitle: string;
-  heroDiscount: string;
-  freeDeliveryMin: number;
-  contactPhone: string;
-  telegram: string;
-  instagram: string;
+export interface FullSiteSettings extends Omit<SiteSettings, "id"> {
   payment: PaymentSettings;
 }
 
@@ -33,6 +24,8 @@ interface AdminContextType {
   orders: Order[];
   settings: FullSiteSettings;
   categories: Category[];
+  footer: FooterSection[];
+  partnerRequests: PartnerRequest[];
   loading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<boolean>;
@@ -42,25 +35,33 @@ interface AdminContextType {
   deleteProduct: (id: string) => Promise<void>;
   updateOrderStatus: (id: string, status: string) => Promise<void>;
   updateSettings: (settings: FullSiteSettings) => Promise<void>;
-  addCategory: (category: { name: string; slug: string; order?: number }) => Promise<void>;
-  updateCategory: (id: string, category: { name: string; slug: string; order?: number }) => Promise<void>;
+  addCategory: (category: CategoryInput) => Promise<void>;
+  updateCategory: (id: string, category: CategoryInput) => Promise<void>;
   deleteCategory: (id: string) => Promise<void>;
+  saveFooter: (sections: FooterSection[]) => Promise<void>;
+  updatePartnerRequestStatus: (id: string, status: string) => Promise<void>;
+  deletePartnerRequest: (id: string) => Promise<void>;
   refreshOrders: () => Promise<void>;
   refreshProducts: () => Promise<void>;
 }
 
-const defaultSettings: FullSiteSettings = {
-  heroTitle: "Tabiiy charm sumkalar kolleksiyasi",
-  heroDiscount: "20",
-  freeDeliveryMin: 500000,
-  contactPhone: "+998 90 123 45 67",
-  telegram: "https://t.me/avera",
-  instagram: "https://instagram.com/avera",
-  payment: {
-    cardNumber: "8600 1234 5678 9012",
-    cardOwner: "AVERA SHOP",
-    telegramUsername: "@avera_admin",
-  },
+export const defaultSettings: FullSiteSettings = {
+  heroBadge: "",
+  heroTitle: "",
+  heroSubtitle: "",
+  heroDiscount: "",
+  heroImage: "",
+  heroCtaText: "",
+  heroCtaLink: "/katalog",
+  featuredTitle: "",
+  freeDeliveryMin: 0,
+  contactPhone: "",
+  telegram: "",
+  instagram: "",
+  address: "",
+  workHours: "",
+  footerAbout: "",
+  payment: { cardNumber: "", cardOwner: "", telegramUsername: "" },
 };
 
 const AdminContext = createContext<AdminContextType | null>(null);
@@ -70,33 +71,45 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [settings, setSettings] = useState<FullSiteSettings>(defaultSettings);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [footer, setFooter] = useState<FooterSection[]>([]);
+  const [partnerRequests, setPartnerRequests] = useState<PartnerRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuth = useCallback(() => {
-    const token = localStorage.getItem("admin_token");
-    return !!token;
-  }, []);
-
   const loadData = useCallback(async () => {
     try {
-      const [productsData, ordersData, categoriesData, settingsData, paymentData] = await Promise.all([
-        api.getProducts(),
-        api.getOrders(),
-        api.getCategories(),
-        api.getSettings(),
-        api.getPaymentSettings(),
-      ]);
+      const [productsData, ordersData, categoriesData, settingsData, paymentData, footerData, partnersData] =
+        await Promise.all([
+          api.getProducts(),
+          api.getOrders(),
+          api.getCategories(true),
+          api.getSettings(),
+          api.getPaymentSettings(),
+          api.getFooter(true),
+          api.getPartnerRequests(),
+        ]);
+
       setProducts(productsData);
       setOrders(ordersData);
       setCategories(categoriesData);
+      setFooter(footerData);
+      setPartnerRequests(partnersData);
       setSettings({
+        heroBadge: settingsData.heroBadge,
         heroTitle: settingsData.heroTitle,
+        heroSubtitle: settingsData.heroSubtitle,
         heroDiscount: settingsData.heroDiscount,
+        heroImage: settingsData.heroImage,
+        heroCtaText: settingsData.heroCtaText,
+        heroCtaLink: settingsData.heroCtaLink,
+        featuredTitle: settingsData.featuredTitle,
         freeDeliveryMin: settingsData.freeDeliveryMin,
         contactPhone: settingsData.contactPhone,
         telegram: settingsData.telegram,
         instagram: settingsData.instagram,
+        address: settingsData.address,
+        workHours: settingsData.workHours,
+        footerAbout: settingsData.footerAbout,
         payment: {
           cardNumber: paymentData.cardNumber,
           cardOwner: paymentData.cardOwner,
@@ -104,31 +117,30 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         },
       });
     } catch {
-      // API unavailable — stay with defaults
+      // API javob bermadi — bo'sh holat bilan davom etamiz
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    const authed = checkAuth();
+    const authed = !!localStorage.getItem("admin_token");
     setIsAuthenticated(authed);
     if (authed) {
       loadData();
     } else {
       setLoading(false);
     }
-  }, [checkAuth, loadData]);
+  }, [loadData]);
 
-  // Poll for new orders every 10 seconds
+  // Yangi buyurtmalar uchun har 10 soniyada tekshiriladi
   useEffect(() => {
     if (!isAuthenticated) return;
     const interval = setInterval(async () => {
       try {
-        const ordersData = await api.getOrders();
-        setOrders(ordersData);
+        setOrders(await api.getOrders());
       } catch {
-        // ignore polling errors
+        // polling xatolari e'tiborsiz
       }
     }, 10000);
     return () => clearInterval(interval);
@@ -153,14 +165,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
 
   const addProduct = useCallback(async (product: Partial<Product>) => {
     await api.createProduct(product);
-    const updated = await api.getProducts();
-    setProducts(updated);
+    setProducts(await api.getProducts());
   }, []);
 
   const updateProduct = useCallback(async (id: string, product: Partial<Product>) => {
     await api.updateProduct(id, product);
-    const updated = await api.getProducts();
-    setProducts(updated);
+    setProducts(await api.getProducts());
   }, []);
 
   const deleteProduct = useCallback(async (id: string) => {
@@ -174,58 +184,60 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateSettings = useCallback(async (newSettings: FullSiteSettings) => {
-    await api.updateSettings({
-      id: "default",
-      heroTitle: newSettings.heroTitle,
-      heroDiscount: newSettings.heroDiscount,
-      freeDeliveryMin: newSettings.freeDeliveryMin,
-      contactPhone: newSettings.contactPhone,
-      telegram: newSettings.telegram,
-      instagram: newSettings.instagram,
-    });
-    await api.updatePaymentSettings({
-      id: "default",
-      cardNumber: newSettings.payment.cardNumber,
-      cardOwner: newSettings.payment.cardOwner,
-      telegramUsername: newSettings.payment.telegramUsername,
-    });
+    const { payment, ...site } = newSettings;
+    await api.updateSettings({ id: "default", ...site });
+    await api.updatePaymentSettings({ id: "default", ...payment });
     setSettings(newSettings);
   }, []);
 
-  const addCategory = useCallback(async (category: { name: string; slug: string; order?: number }) => {
+  const addCategory = useCallback(async (category: CategoryInput) => {
     await api.createCategory(category);
-    const updated = await api.getCategories();
-    setCategories(updated);
+    setCategories(await api.getCategories(true));
   }, []);
 
-  const updateCategory = useCallback(async (id: string, category: { name: string; slug: string; order?: number }) => {
+  const updateCategory = useCallback(async (id: string, category: CategoryInput) => {
     await api.updateCategory(id, category);
-    const updated = await api.getCategories();
-    setCategories(updated);
+    setCategories(await api.getCategories(true));
   }, []);
 
   const deleteCategory = useCallback(async (id: string) => {
     await api.deleteCategory(id);
-    setCategories(prev => prev.filter(c => c.id !== id));
+    setCategories(await api.getCategories(true));
+    // Kategoriya o'chirilganda mahsulotlar kategoriyasiz qoladi — ro'yxatni yangilaymiz
+    setProducts(await api.getProducts());
+  }, []);
+
+  const saveFooter = useCallback(async (sections: FooterSection[]) => {
+    const saved = await api.updateFooter(sections);
+    setFooter(saved);
+  }, []);
+
+  const updatePartnerRequestStatus = useCallback(async (id: string, status: string) => {
+    await api.updatePartnerRequestStatus(id, status);
+    setPartnerRequests(prev => prev.map(r => r.id === id ? { ...r, status } : r));
+  }, []);
+
+  const deletePartnerRequest = useCallback(async (id: string) => {
+    await api.deletePartnerRequest(id);
+    setPartnerRequests(prev => prev.filter(r => r.id !== id));
   }, []);
 
   const refreshOrders = useCallback(async () => {
-    const ordersData = await api.getOrders();
-    setOrders(ordersData);
+    setOrders(await api.getOrders());
   }, []);
 
   const refreshProducts = useCallback(async () => {
-    const productsData = await api.getProducts();
-    setProducts(productsData);
+    setProducts(await api.getProducts());
   }, []);
 
   return (
     <AdminContext.Provider value={{
-      products, orders, settings, categories, loading, isAuthenticated,
+      products, orders, settings, categories, footer, partnerRequests, loading, isAuthenticated,
       login, logout,
       addProduct, updateProduct, deleteProduct,
       updateOrderStatus, updateSettings,
       addCategory, updateCategory, deleteCategory,
+      saveFooter, updatePartnerRequestStatus, deletePartnerRequest,
       refreshOrders, refreshProducts,
     }}>
       {children}
